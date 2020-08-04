@@ -315,6 +315,43 @@ describe('<Carousel>', () => {
       expect(onSelectSpy).to.have.been.calledOnce;
     });
 
+    it('should go through the items given the specified intervals', () => {
+      const defaultInterval = 5000;
+      const intervals = [
+        1000,
+        500,
+        defaultInterval, // to test for no interval specified, it should be the default
+      ];
+      const itemsWithIntervals = [
+        <Carousel.Item key={1} interval={intervals[0]}>
+          Item 1 content
+        </Carousel.Item>,
+        <Carousel.Item key={2} interval={intervals[1]}>
+          Item 2 content
+        </Carousel.Item>,
+        <Carousel.Item key={3}>Item 3 content</Carousel.Item>,
+      ];
+
+      const onSelectSpy = sinon.spy();
+      mount(
+        <Carousel interval={defaultInterval} onSelect={onSelectSpy}>
+          {itemsWithIntervals}
+        </Carousel>,
+      );
+
+      clock.tick(intervals[0] * 1.5);
+      expect(onSelectSpy).to.have.been.calledOnce;
+      expect(onSelectSpy.firstCall).to.have.been.calledWith(1);
+
+      clock.tick(intervals[1] * 2);
+      expect(onSelectSpy).to.have.been.calledTwice;
+      expect(onSelectSpy.secondCall).to.have.been.calledWith(2);
+
+      clock.tick(intervals[2]);
+      expect(onSelectSpy).to.have.been.calledThrice;
+      expect(onSelectSpy.thirdCall).to.have.been.calledWith(0);
+    });
+
     it('should stop going through items on hover and continue afterwards', () => {
       const onSelectSpy = sinon.spy();
       const interval = 500;
