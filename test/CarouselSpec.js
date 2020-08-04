@@ -339,16 +339,12 @@ describe('<Carousel>', () => {
         </Carousel>,
       );
 
-      clock.tick(intervals[0] * 1.5);
-      expect(onSelectSpy).to.have.been.calledOnce;
-      expect(onSelectSpy.firstCall).to.have.been.calledWith(1);
+      const total = intervals.reduce((sum, current) => sum + current, 0);
+      clock.tick(total * 1.1);
 
-      clock.tick(intervals[1] * 2);
-      expect(onSelectSpy).to.have.been.calledTwice;
-      expect(onSelectSpy.secondCall).to.have.been.calledWith(2);
-
-      clock.tick(intervals[2]);
       expect(onSelectSpy).to.have.been.calledThrice;
+      expect(onSelectSpy.firstCall).to.have.been.calledWith(1);
+      expect(onSelectSpy.secondCall).to.have.been.calledWith(2);
       expect(onSelectSpy.thirdCall).to.have.been.calledWith(0);
     });
 
